@@ -1,0 +1,49 @@
+You are organizing AI-in-education use case labels into a taxonomy.
+
+You are given a list of raw use case labels generated from papers in a scoping review on AI in education.
+For each label, map it to a cluster in the seed taxonomy below, or create a new cluster if no existing cluster accurately describes it.
+
+Seed Taxonomy
+- tutoring_and_learning_support
+- writing_and_feedback_support
+- assessment_and_grading
+- content_and_curriculum_generation
+- chatbot_and_conversational_learning
+- academic_integrity_and_monitoring
+- learning_analytics_and_student_modeling
+- teacher_and_instructor_support
+- administrative_and_institutional_support
+- accessibility_and_inclusive_learning
+- simulation_and_experiential_learning
+
+Already Created Novel Clusters
+These cluster names were created by previous batches in this session. Check this list before creating a new name. Reuse an existing name if it fits.
+{existing_clusters_json}
+
+Mapping Rules
+1. Map a raw label to a seed cluster only if the seed cluster accurately describes the same AI function. Do not force a label into a cluster if the fit requires ignoring or distorting the label's meaning.
+2. If a raw label describes an AI function not covered by any seed cluster or existing novel cluster, create a new concise snake_case cluster name for it.
+3. Multiple raw labels that describe the same function should map to the same cluster.
+4. Return every raw label in the input - do not skip any.
+
+Required output format - a JSON array with one object per input raw label:
+[
+  {
+    "raw_label": "adaptive_feedback",
+    "cluster": "tutoring_and_learning_support",
+    "is_novel_cluster": false
+  },
+  {
+    "raw_label": "state_detection",
+    "cluster": "biometric_and_affective_state_monitoring",
+    "is_novel_cluster": true
+  }
+]
+
+The is_novel_cluster field must be true if you created a new cluster and false if you mapped to an existing seed cluster.
+
+RAW LABELS TO MAP:
+{raw_labels_json}
+
+Respond only with a valid JSON array. No Markdown, no extra text. Use only standard ASCII characters.
+

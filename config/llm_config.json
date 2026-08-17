@@ -1,0 +1,13 @@
+{
+  "endpoint": "https://chat.kiconnect.nrw/api/v1/chat/completions",
+  "model": "OpenAI GPT OSS 120b KI:Inferenz.nrw",
+  "parameters": {
+    "temperature": 0.2,
+    "top_p": 0.9
+  },
+  "retry": {
+    "max_retries": 3,
+    "backoff_factor": 2
+  },
+  "timeout_seconds": 120
+}

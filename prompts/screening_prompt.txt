@@ -1,0 +1,52 @@
+You are screening academic papers for a scoping review on AI affordances in education.
+For each paper, decide whether it meets the criteria below and assign INCLUDE or EXCLUDE.
+
+INCLUSION - include if AT LEAST ONE of the following applies:
+- The paper explicitly mentions AI, LLM, generative AI, agentic AI, or an AI integrated institutional system, AND describes an educational application/use-case in which AI is used to perform an instructional function such as teaching, learning, student services, administration, quality assurance, institutional leadership within educational organisations, or public education programmes.
+- The paper critically examines how a specific AI application affects learning, teaching, or educational values, backed by empirical evidence or theoretical and critical argumentation.
+- The paper explicitly evaluates affordances in educational AI applications AND use cases where AI performs an instructional function
+
+EXCLUSION - exclude if ANY of the following applies:
+- AI performs no educational function in the paper.
+- No educational or learning context.
+- The paper does not explicitly refer to AI, GenAI, Agentic AI, or LLM. "Intelligent" or "smart", "Algorithm" or any names System that does not clearly mention using AI does not qualify.
+- The paper designs, evaluates, or reviews approaches for teaching AI concepts, AI literacy, AI ethics, or AI competency to students or professionals.
+- papers that only discuss AI's presence, potential, or general impact in education without describing an actual AI in education use case.
+- Purely technical AI paper with no educational application.
+- VR, AR, or simulation without explicit AI involvement.
+- The paper embeds AI concepts into subject teaching as the primary educational purpose
+- The paper measures attitudes, perceptions, efficacy beliefs, or acceptance toward AI without critically examining AI's role as an instructional tool.
+- Technical or domain-specific classification tasks where AI serves no educational function, including systems demonstrated in a classroom that do not facilitate learning.
+- Workplace or professional context where AI is not used for educational purposes. Professional training is an educational purpose and should be included.
+- Patient care or clinical practice where AI's primary function is medical treatment, diagnosis, or clinical decision support rather than educational delivery to patients, students, or the public.
+- Purely bibliometric analyses or publication-trend studies (e.g., citation counts, publication volume over time) that do not synthesize or evaluate findings about AI's educational role.
+- AI in education is not the paper's primary topic - AI appears as one detail within a paper about something else (e.g., a curriculum, a profession, an exam format, a research method, a clinical condition).
+- AI is used purely for system-level research with no connection to student experience, learning outcomes, or educational management.
+- The paper's primary focus is testing or critiquing AI outputs as objects of study (e.g., analysing a chatbot's response for bias or comparing AI systems on benchmark tasks), rather than describing AI delivering instruction, feedback, or assessment within an educational programme. This does not apply to theoretical or philosophical papers that conceptualise AI's role in education without testing a system's actual outputs.
+- AI was used as a one time data-generation tool outside any instructional use-case application
+
+For each paper, output:
+- paper_id: integer, exactly as given in the input
+- screening_decision: INCLUDE or EXCLUDE
+- fit_score: integer 1-10
+    1-2: clearly irrelevant
+    3-4: AI mentioned but the educational application is vague
+    5-6: concrete AI application, but limited scope or contribution
+    7-8: clear AI use case with meaningful evaluation or analysis
+    9-10: core paper with strong empirical or theoretical contribution
+- fit_justification: one sentence explaining the decision
+
+Required output format - a JSON array with one object per input paper:
+[
+  {
+    "paper_id": 0,
+    "screening_decision": "INCLUDE",
+    "fit_score": 9,
+    "fit_justification": "One sentence rationale."
+  }
+]
+
+PAPERS TO SCREEN:
+{papers_json}
+
+Respond only with a valid JSON array. No Markdown, no extra text. Use only standard ASCII characters.

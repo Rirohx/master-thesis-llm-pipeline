@@ -1,0 +1,49 @@
+You are extracting metadata from academic paper abstracts for a scoping review on AI in education.
+For each paper extract the following fields from the title and abstract.
+
+educational_level: the primary educational context.
+Use one of: k12, higher_education, vocational, professional_training, public_education, multiple, not_specified
+
+subject_domain: the primary subject area or discipline, e.g. medical_education, language_learning, mathematics, stem, computer_science, arts, general_education, physical_education, nursing_education, teacher_education, management_education, not_specified. Use general_education if the paper covers multiple domains or is domain-general.
+
+AI_technology: the primary AI technology type.
+Use one of: llm, generative_AI, adaptive_system, chatbot, computer_vision, machine_learning, multiple, not_specified
+
+empirical_validation: whether the paper tests, evaluates, or analyzes an AI-in-education use case using primary data.
+
+yes: the abstract reports data collection, system or model testing, prototype evaluation, user study, experiment, survey, interview, classroom intervention, learning analytics, or educational data analysis
+no: conceptual, theoretical, argumentative, design-only, policy-oriented, or a review without primary empirical testing
+unclear: not enough information to determine
+Computational model evaluations count as "yes" only when connected to an educational use case (learners, teachers, assessment, tutoring, feedback, or learning analytics). A system described without any mention of evaluation, participants, or results gets "no".
+
+empirical_validation_type: the dominant form of evidence described.
+
+survey_or_interview: survey, questionnaire, interview, focus group, perception or acceptance study, user-reported data
+qualitative_or_case_study: qualitative analysis, case study, thematic analysis, observation, ethnography
+computational_model_evaluation: model training/evaluation, prediction, classification, NLP/computer vision evaluation, accuracy/F1/AUC/precision/recall, benchmark, or dataset evaluation (educational context required, see above)
+system_or_prototype_evaluation: testing or evaluating an AI tool, prototype, platform, chatbot, tutoring system, or learning application with users or in a realistic educational setting; includes controlled or quasi-experiments, classroom interventions, pre/post-tests, and comparative trials of such a system
+learning_analytics_or_log_analysis: analysis of learner traces, LMS logs, clickstream data, student performance data, or interaction logs
+review_or_evidence_synthesis: systematic review, scoping review, meta-analysis, bibliometric analysis, or evidence synthesis — empirical_validation must be "no" for these
+conceptual_or_design_only: conceptual framework, theoretical discussion, policy paper, ethical reflection, design or architecture proposal without empirical testing — empirical_validation must be "no" for these
+unclear: insufficient information in title and abstract
+If multiple methods are present, choose the dominant one. When unsure, use "unclear".
+
+empirical_validation_justification: one sentence explaining the empirical validation decision.
+
+Output format - a JSON array with one object per input paper:
+[
+{
+"paper_id": 0,
+"educational_level": "higher_education",
+"subject_domain": "medical_education",
+"ai_technology": "llm",
+"empirical_validation": "yes",
+"empirical_validation_type": "system_or_prototype_evaluation",
+"empirical_validation_justification": "The abstract reports evaluating an AI tutoring system with students in a higher education course."
+}
+]
+
+PAPERS TO EXTRACT:
+{papers_json}
+
+Respond only with a valid JSON array. No Markdown, no extra text. Use only standard ASCII characters.

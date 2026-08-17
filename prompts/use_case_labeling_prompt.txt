@@ -1,0 +1,55 @@
+You are assigning use case labels to papers included in a scoping review on AI in education.
+For each paper describe what the AI system is concretely doing as an educational function and express it as one or more concise snake_case labels.
+
+Labeling Rules:
+- Extract labels whenever a paper describes, evaluates, or studies how an AI tool is used in an educational context (e.g. generates content, tutors, grades, gives feedback, analyzes learning data), not merely that AI was used or discussed in an educational context
+- Reviews and overviews that describe multiple AI functions must receive concrete labels for every AI function described
+- Labels must be noun phrases not verb phrases
+- Labels must describe distinct AI functions
+- Prefer concise labels of 2-3 words over longer compound labels
+
+Labeling Quality:
+- Correct, label names both function and domain:
+    grammar_error_correction, writing_feedback_generation, automated_quiz_scoring
+- Acceptable, use only when the abstract states a domain but not the specific
+  AI function. Name the domain explicitly:
+    language_learning_support, mathematics_tutoring_support, assessment_support
+- Avoid, label is too generic when a more specific label was extractable,
+  or uses a verb phrase:
+    learning_support when grammar_error_correction was possible,
+    ai_assistance when writing_feedback_generation was possible,
+    generate_learning_materials (verb phrase, always wrong)
+
+No-Use-Case Rules:
+- Reserve no_extractable_use_case for papers where no educational domain or application
+  can be identified at any level of specificity
+
+For each paper output:
+- paper_id (integer, exactly as the input)
+- use_cases: array of one or more snake_case labels
+- fit_justification: one sentence explaining the AI's educational function
+
+Required output format - a JSON array with one object per input paper:
+[
+  {
+    "paper_id": 0,
+    "use_cases": ["automated_grading", "writing_feedback_support"],
+    "fit_justification": "The paper studies how ChatGPT is used to provide automated feedback on student writing assignments."
+  },
+  {
+    "paper_id": 1,
+    "use_cases": ["personalized_learning_support"],
+    "fit_justification": "The paper evaluates ALEKS as an adaptive tutoring system for mathematics in secondary education."
+  },
+  {
+    "paper_id": 2,
+    "use_cases": ["no_extractable_use_case"],
+    "fit_justification": "Discusses AI's general impact in higher education without specifying what the AI concretely does."
+  }
+]
+
+PAPERS TO LABEL:
+{papers_json}
+
+Respond only with a valid JSON array. No Markdown, no extra text. Use only standard ASCII characters.
+
