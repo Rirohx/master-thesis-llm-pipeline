@@ -1,7 +1,7 @@
 # AI Literature Screening Pipeline
 An LLM-automated screening pipeline for a scoping review in AI in education (AIED) <br>
 The pipeline consists of four steps: <br>
-1) Screening: Literature abstracts are screened for inclusion and exlusion criteria
+1) Screening: Literature abstracts are screened for inclusion and exclusion criteria
 2) Use-Case-labeling: Use-case labels based on the AI's educational function
 3) Clustering: Use-case labels are clustered around the given seed taxonomy and LLM created novel clusters
 4) Meta-data Extraction: Extracting metadata of AIED landscape and pipeline output
