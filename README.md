@@ -144,9 +144,7 @@ ai_screening_pipeline/
 ├── scripts/
 │   ├── pipeline.py                  # Main pipeline (Steps 1-4)
 │   ├── apply_corrections.py         # Manual cluster corrections; also exports LABEL_CORRECTIONS as an importable dict
-│   ├── analysis.py                  # All figures and tables for the thesis
-│   ├── compare_pipeline_output.py   # Raw vs. corrected corpus comparison report
-│   └── validate.py                  # Step 1 validation against a gold dataset
+│   └── analysis.py                  # All figures and tables for the thesis
 ├── utils/
 │   ├── llm_client.py                # LLM connection and retry handler
 │   └── checkpoint.py                # Checkpoint save/load/clear
@@ -155,7 +153,10 @@ ai_screening_pipeline/
 ├── requirements.txt
 └── README.md
 ```
-## 4. How to reproduce the analysis
+## 4. How to replicate the study
+Exactly reproducing this run is not guaranteed, since LLM screening varies between runs. 
+The `apply_corrections.py` script targets label names from this specific run, so it may not apply a new pipeline run.
+
 Clone the repository, then set the endpoint, model and API key as described in [1.2 Installation](#12-installation) and install the dependencies with `pip3 install -r requirements.txt`. After that, run the three scripts in this order:
 
 ```bash

@@ -436,6 +436,9 @@ def main():
     df["tree_clusters"] = resolve_tree_clusters(df)
     meta = pd.read_csv(METADATA_CSV) if METADATA_CSV.exists() else None
     if meta is not None:
+        # keep only the papers the analysis actually covers, so the metadata figures
+        # use the same corpus as every other figure
+        meta = meta[meta["paper_id"].isin(df["paper_id"])]
         for col in ("ai_technology", "subject_domain"):
             meta[col] = meta[col].str.lower().str.strip()
     print(f"Loaded {len(df)} papers")
