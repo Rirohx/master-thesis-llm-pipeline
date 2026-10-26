@@ -1,10 +1,10 @@
 """
 Main screening pipeline for the AI in education literature review.
 The pipeline consists of  four steps:
-1) Screening: Literature abstracts are screened for inclusion and exlusion criteria
-2) Use-Case-labeling: Use-case labels based on the AI's educational function
-3) Clustering: Use-case labels are clustered around the given seed taxonomy and LLM created novel clusters
-4) Meta-data Extraction: Extracting metadata of AIED landscape and pipeline output
+1) Screening: Literature screening based on inclusion and exlusion criteria
+2) Use-Case-labeling: Use-case labeling
+3) Clustering: Use-case labels are clustered to the seed taxonomy and novel clusters
+4) Meta-data Extraction: Extracting metadata
 """
 
 from __future__ import annotations

@@ -1,11 +1,6 @@
 """
-The script reads corpus_final_corrected.csv and metadata.csv to generate supporting tables and figures.
-
-Data Output is structured and processed as follows:
-1. corpus_final.csv is the raw, unedited final output
-2. corpus_final_corrected.csv is the adjusted output with the script "apply_corrections.py"
-3. manually created Cluster Tree. This produces:
-   cluster_tree_distribution.svg and aied_landscape_overview.csv
+Input: corpus_final_corrected.csv and metadata.csv
+Generates the AIED-Landscape Tables and Figures
 """
 
 from __future__ import annotations
@@ -22,7 +17,7 @@ import pandas as pd
 from wordcloud import WordCloud
 from apply_corrections import LABEL_CORRECTIONS
 
-# Chart Syntax
+# Syntax
 plt.rcParams["font.family"] = "Times New Roman"
 TITLE_SIZE = 14
 LABEL_SIZE = 12
@@ -50,8 +45,8 @@ SEED_TAXONOMY = {
     "simulation_and_experiential_learning",
 }
 
-# Cluster Tree Hierarchy: Root cluster with sub-category and leaf clusters
-# Every leaf/subcategory name must match an actual cluster in use_case_clusters.
+# Cluster Tree Hierarchy: Root cluster with sub-categories
+# Subcategory must match cluster in use_case_clusters.
 TAXONOMY_TREE = {
     "tutoring_and_learning_support": {
         "content_personalization": {},
@@ -83,7 +78,6 @@ TAXONOMY_TREE = {
         "affective_state_monitoring": {"wellbeing_support": {}},
         "engagement_support": {},
         "reflection_support": {},
-        "perspective_taking_support": {},
         "knowledge_analytics_support": {},
         "explainability_support": {},
         "knowledge_graph_support": {},
@@ -97,19 +91,14 @@ TAXONOMY_TREE = {
         "cybersecurity_threat_detection": {},
         "structure_classification": {},
     },
-    "chatbot_and_conversational_learning": {
-        "chatbot_development": {},
-    },
+    "chatbot_and_conversational_learning": {},
     "content_retrieval_and_curation": {},
     "research_support": {
         "data_augmentation": {},
     },
     "accessibility_and_inclusive_learning": {},
     "simulation_and_experiential_learning": {},
-    "other": {
-        "computer_vision_analysis": {},
-        "scientific_property_prediction": {},
-    },
+    "computer_vision_analysis": {},
     "no_use_case": {},
 }
 
@@ -172,15 +161,19 @@ def bar_chart(df, label_col, title, filename, color="#4C72B0", width=10.0, heigh
     save_chart(filename)
 
 
-def png_bar_chart(counts, label_col, title, filename, color):
+def png_bar_chart(counts, label_col, title, filename, color, show_percentage=False):
     ordered = counts.sort_values("count", ascending=True)
     fig, ax = plt.subplots(figsize=(10, max(4, len(ordered) * 0.4)))
-    ax.barh(ordered[label_col], ordered["count"], color=color)
+    bars = ax.barh(ordered[label_col], ordered["count"], color=color)
     ax.set_xlabel("Number of Papers", fontsize=LABEL_SIZE)
     ax.set_title(title, fontsize=TITLE_SIZE, fontweight="normal")
     ax.tick_params(labelsize=TICK_SIZE)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
+    if show_percentage and "percentage" in ordered.columns:
+        for bar, pct in zip(bars, ordered["percentage"]):
+            ax.text(bar.get_width() + 0.5, bar.get_y() + bar.get_height() / 2,
+                    f"{pct}%", va="center", fontsize=TICK_SIZE)
     plt.tight_layout()
     path = CHARTS_DIR / filename
     plt.savefig(path, dpi=CHART_DPI, bbox_inches="tight")
@@ -249,12 +242,14 @@ def cluster_frequency(df: pd.DataFrame):
 
 
 def top_use_cases(df: pd.DataFrame):
+    total_papers = len(df)
     counts = Counter()
     for labels in df["use_cases"]:
         counts.update(labels)
 
     top25 = pd.DataFrame(
-        [{"use_case": l, "papers": n} for l, n in counts.most_common(25)]
+        [{"use_case": l, "papers": n, "percentage": round(n / total_papers * 100, 1)}
+         for l, n in counts.most_common(25)]
     ).sort_values("papers", ascending=True)
     bar_chart(top25, "use_case", "Top 25 Use Case labels",
               "top_use_cases_25.svg", width=14.0, height=9.0)
@@ -352,7 +347,7 @@ def subject_domain_distribution(meta):
     counts["percentage"] = (counts["count"] / total_papers * 100).round(1)
 
     png_bar_chart(counts, "subject_domain", "Subject Domain Distribution",
-                  "subject_domain_distribution.png", "#4C72B0")
+                  "subject_domain_distribution.png", "#4C72B0", show_percentage=True)
 
 
 def empirical_validation_type_distribution(meta):
@@ -436,8 +431,7 @@ def main():
     df["tree_clusters"] = resolve_tree_clusters(df)
     meta = pd.read_csv(METADATA_CSV) if METADATA_CSV.exists() else None
     if meta is not None:
-        # keep only the papers the analysis actually covers, so the metadata figures
-        # use the same corpus as every other figure
+        # Same corpus for every figure
         meta = meta[meta["paper_id"].isin(df["paper_id"])]
         for col in ("ai_technology", "subject_domain"):
             meta[col] = meta[col].str.lower().str.strip()

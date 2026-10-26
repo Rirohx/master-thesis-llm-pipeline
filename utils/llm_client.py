@@ -17,7 +17,7 @@ class LLMClient:
     def __init__(self, config: dict, api_key: str):
         api_key = (api_key or "").strip()
         if not api_key:
-            raise ValueError("api_key must be a non-empty string")
+            raise ValueError("api_key must be a non-empty")
 
         endpoint = str(config.get("endpoint", "")).strip()
         if not endpoint:
@@ -43,7 +43,7 @@ class LLMClient:
 
     def call(self, prompt: str) -> str:
         if not isinstance(prompt, str) or not prompt.strip():
-            raise ValueError("prompt must be a non-empty string")
+            raise ValueError("prompt must be a non-empty")
 
         payload = {
             "model": self.model,

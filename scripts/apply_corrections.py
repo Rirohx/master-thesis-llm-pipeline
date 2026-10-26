@@ -1,5 +1,5 @@
 """
-Applies manual changes from the review process as described in:
+Applies manual changes as described in:
 > Yilmaz, I. (2026). AI Affordances in Education: A Scoping Review on Use Cases, Constraints, and Alignment with Educational Purpose. University of Cologne.
   Appendix B.3: Cluster Refinement Process
 """
@@ -77,13 +77,13 @@ def apply_label_moves(rows: list[dict], label_moves: dict, step_name: str) -> li
     return rows
 
 
-# Step 1: Top-50 spotcheck corrections
+# Step 1: Top-50 corrections
 STEP1_MOVES = {
     "feedback_generation": "assessment_and_grading",
     "lesson_planning_support": "teacher_and_instructor_support",
 }
 
-# Step 2: tiny cluster merges
+# Step 2: small cluster merges
 STEP2_MOVES = {
     "bibliometric_analysis_support": "research_support",
     "counterfactual_explanation": "learning_analytics_and_student_modeling",
@@ -256,7 +256,7 @@ STEP5_MOVES = {
     "topic_selection_support": "content_retrieval_and_curation",
     "vocabulary_lookup": "content_retrieval_and_curation",
     "writing_category_coding": "content_retrieval_and_curation",
-    # content_delivery merge, added on top of the content_curation batch above
+    # content_delivery merge
     "ai_content_delivery": "content_retrieval_and_curation",
     "ai_enhanced_textbook": "content_retrieval_and_curation",
     "ai_gamified_learning": "content_retrieval_and_curation",
@@ -291,13 +291,42 @@ STEP5_MOVES = {
     "voice_synthesis": "content_retrieval_and_curation",
 }
 
-# Step 6: final small cluster merges
+# Step 6: Small cluster merges
 STEP6_MOVES = {
     "artwork_classification_support": "creative_design_support",
     "lifelong_learning_platform": "tutoring_and_learning_support",
 }
 
-# Order of changes
+# Step 7: Label adjustments
+STEP7_MOVES = {
+    "feedback_tagging_support": "assessment_and_grading",
+    "interactive_chatbot_training": "chatbot_and_conversational_learning",
+    "educational_chatbot_support": "chatbot_and_conversational_learning",
+    "persona_creation_support": "chatbot_and_conversational_learning",
+    "chatbot_development": "chatbot_and_conversational_learning",
+    "perspective_introduction": "collaborative_learning_support",
+    "perspective_taking_support": "content_and_curriculum_generation",
+}
+
+# Manual exclusions
+MANUAL_EXCLUSIONS = {
+    3135: "ML as a teaching concept",
+    5925: "Prompt engineering as a concept",
+    8835: "Prompt engineering as a concept",
+    4032: "ML as a concept",
+    2352: "GenAI as concept",
+    3406: "Prompt development as a concept",
+    3668: "AI as a concept",
+    5924: "AI literacy",
+    7843: "AI as a concept",
+    1640: "Chatbot development as a concept",
+    2127: "AI as a concept",
+    8208: "Prompt engineering methods",
+    515: "Not relevant",
+    4215: "Not relevant",
+    3855: "ML model building",
+}
+
 CORRECTION_STEPS = [
     ("Step 1", STEP1_MOVES),
     ("Step 2", STEP2_MOVES),
@@ -305,9 +334,10 @@ CORRECTION_STEPS = [
     ("Step 4", STEP4_MOVES),
     ("Step 5", STEP5_MOVES),
     ("Step 6", STEP6_MOVES),
+    ("Step 7", STEP7_MOVES),
 ]
 
-# Correct Lookup Dic.: Every step's moves merged
+# Lookup: Every step move merged
 LABEL_CORRECTIONS = {}
 for _step_name, _moves in CORRECTION_STEPS:
     LABEL_CORRECTIONS.update(_moves)
@@ -321,7 +351,36 @@ def main():
         print(f"\nApplying {step_name}...")
         apply_label_moves(rows, moves, step_name)
 
-    print("\nSaving output...")
+    # Drop No-Use Case cluster
+    def is_no_use_case(r):
+        try:
+            return json.loads(r.get("use_case_clusters", "[]")) == ["no_use_case"]
+        except Exception:
+            return False
+
+    before = len(rows)
+    rows = [r for r in rows if not is_no_use_case(r)]
+    print(f"\nDropped no_use_case papers: {before - len(rows)}")
+
+    # Drop manual-review exclusions
+    print(f"\nApplying manual exclusions: {len(MANUAL_EXCLUSIONS)}")
+    kept = []
+    removed = 0
+    for r in rows:
+        try:
+            pid = int(r.get("paper_id"))
+        except (TypeError, ValueError):
+            kept.append(r)
+            continue
+        if pid in MANUAL_EXCLUSIONS:
+            print(f"  excluded {pid}: {MANUAL_EXCLUSIONS[pid]}")
+            removed += 1
+        else:
+            kept.append(r)
+    rows = kept
+    print(f"Excluded: {removed}")
+
+    print(f"\nSaving output... ({len(rows)} rows)")
     save_csv(rows, fieldnames, OUTPUT_FILE, delim)
     print(f"Output saved: {OUTPUT_FILE}")
     print("\nDone.")
